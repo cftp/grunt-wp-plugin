@@ -61,7 +61,7 @@ require_once 'includes/plugin.class.php';
 Class {%= plugin_class %} extends {%= plugin_class %}_Plugin {
 
 	public function __construct() {
-		$this->setup( '{%= prefix %}', 'plugin' );
+		$this->setup( '{%= prefix %}', __FILE__, 'plugin' );
 	}
 
 }

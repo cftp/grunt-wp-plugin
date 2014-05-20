@@ -115,22 +115,27 @@ class {%= plugin_class %}_Plugin {
 	 * @return void
 	 * @author Simon Wheatley
 	 **/
-	public function setup( $name = '', $type = null ) {
+	public function setup( $name = '', $file = __FILE__, $type = null ) {
+
 		if ( ! $name )
 			throw new exception( "Please pass the name parameter into the setup method." );
 		$this->name = $name;
 
 		// Attempt to handle a Windows
 		$ds = ( defined( 'DIRECTORY_SEPARATOR' ) ) ? DIRECTORY_SEPARATOR : '\\';
-		$file = str_replace( $ds, '/', __FILE__ );
+		$file = str_replace( $ds, '/', $file );
 		$plugins_dir = str_replace( $ds, '/', WP_PLUGIN_DIR );
+
 		// Setup the dir and url for this plugin/theme
 		if ( 'theme' == $type ) {
+
 			// This is a theme
 			$this->type = 'theme';
 			$this->dir = get_stylesheet_directory();
 			$this->url = get_stylesheet_directory_uri();
+
 		} elseif ( stripos( $file, $plugins_dir ) !== false || 'plugin' == $type ) {
+
 			// This is a plugin
 			$this->folder = trim( basename( dirname( $file ) ), '/' );
 			$this->type = 'plugin';
@@ -145,6 +150,7 @@ class {%= plugin_class %}_Plugin {
 			$plugins_url = apply_filters( 'sil_plugins_url', plugins_url(), $this->name );
 			$this->dir = trailingslashit( $plugins_dir ) . $this->folder . '/';
 			$this->url = trailingslashit( $plugins_url ) . $this->folder . '/';
+
 		} else {
 			// WTF?
 			error_log( 'PLUGIN/THEME ERROR: Cannot find ' . $plugin_dir . ' or "themes" in ' . $file );
