@@ -31,10 +31,19 @@ exports.template = function( grunt, init, done ) {
 			default: 'wpplugin'
 		},
 		init.prompt( 'description', 'The best WordPress extension ever made!' ),
-		init.prompt( 'homepage', 'http://wordpress.org/plugins' ),
-		init.prompt( 'author_name' ),
-		init.prompt( 'author_email' ),
-		init.prompt( 'author_url' ),
+		{
+            name   : 'homepage',
+            message: 'The previously entered plugin prefix will be appended to this.',
+            default: 'http://github.com/cftp/'
+        },
+        {
+            name   : 'plugin_class',
+            message: 'PHP class prefix (alpha and underscore chars only)',
+            default: 'WP_Plugin'
+        },
+		init.prompt( 'author_name', 'Code For The People' ),
+		init.prompt( 'author_email', 'hello@codeforthepeople.com' ),
+		init.prompt( 'author_url', 'http://codeforthepeople.com' ),
 		{
 			name: 'css_type',
 			message: 'CSS Preprocessor: Will you use "Sass", "LESS", or "none" for CSS with this project?',
