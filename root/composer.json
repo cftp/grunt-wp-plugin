@@ -1,0 +1,22 @@
+{
+    "name": "cftp/{%= prefix %}",
+    "description": "{%= description %}",
+    "keywords": ["wordpress"],
+    "type": "wordpress-plugin",
+    "homepage": "https://github.com/cftp/{%= prefix %}",
+    "license"    : "GPL-2.0",
+    "authors"    : [
+        {
+            "name"    : "{%= author_name %}",
+            "homepage": "{%= author_url %}"
+        }
+    ],
+    "support"    : {
+        "issues": "https://github.com/cftp/{%= prefix %}/issues",
+        "source": "https://github.com/cftp/{%= prefix %}"
+    },
+    "require"    : {
+        "php": ">=5.2.4",
+        "composer/installers": "~1.0"
+    }
+}
