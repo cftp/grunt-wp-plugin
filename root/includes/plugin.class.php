@@ -137,7 +137,6 @@ class RS2014_Plugin {
 
 			// This is a plugin
 			$this->folder = trim( basename( dirname( $file ) ), '/' );
-			error_log(var_export($this->folder,true));
 			$this->type = 'plugin';
 			// Allow someone to override the assumptions we're making here about where
 			// the plugin is held. For example, if this plugin is included as part of
@@ -147,7 +146,6 @@ class RS2014_Plugin {
 			// N.B. Because this code is running when the file is required, other plugins
 			// may not be loaded and able to hook these filters!
 			$plugins_dir = apply_filters( 'sil_plugins_dir', $plugins_dir, $this->name );
-			error_log(var_export($plugins_dir,true));
 			$plugins_url = apply_filters( 'sil_plugins_url', plugins_url(), $this->name );
 			$this->dir = trailingslashit( $plugins_dir ) . $this->folder . '/';
 			$this->url = trailingslashit( $plugins_url ) . $this->folder . '/';
@@ -500,7 +498,7 @@ class RS2014_Plugin {
 	 * @author Simon Wheatley
 	 **/
 	protected function dir( $path ) {
-		return trailingslashit( $this->dir ) . trim( $path, '/' );
+		return trailingslashit( trailingslashit( $this->dir ) . trim( $path, '/' ) );
 	}
 
 	/**
@@ -619,11 +617,12 @@ class RS2014_Plugin {
 
 		// Where are we to find our widgets?
 		$folder_base = $this->dir('includes/widgets');
-		error_log(var_export($folder_base,true));
 
 		// Find any widget classes and load them up
 		if ( file_exists( $folder_base ) ) {
-			error_log("Folder exists");
+
+			// We extend WP_Widget with some extras
+			load_template( $this->dir('includes') . 'widget-base.php' );
 
 			// Regex for finding the widget name
 			$preg = '/class[\s\n]+([a-zA-Z0-9_]+)[\s\na-zA-Z0-9_]+\{/';
