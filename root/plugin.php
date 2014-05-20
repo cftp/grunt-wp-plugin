@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: {%= title %}
- * Plugin URI:  {%= homepage %}
+ * Plugin URI:  {%= homepage %}{%= prefix %}
  * Description: {%= description %}
  * Version:     0.1.0
  * Author:      {%= author_name %}
@@ -12,7 +12,24 @@
  */
 
 /**
- * Copyright (c) {%= grunt.template.today('yyyy') %} {%= author_name %} (email : {%= author_email %})
+ * Copyright (c) {%= grunt.template.today('yyyy') %} {%= author_name %}
+ *
+ *                 _____________
+ *                /      ____   \
+ *          _____/       \   \   \
+ *         /\    \        \___\   \
+ *        /  \    \                \
+ *       /   /    /          _______\
+ *      /   /    /          \       /
+ *     /   /    /            \     /
+ *     \   \    \ _____    ___\   /
+ *      \   \    /\    \  /       \
+ *       \   \  /  \____\/    _____\
+ *        \   \/        /    /    / \
+ *         \           /____/    /___\
+ *          \                        /
+ *           \______________________/
+ *
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2 or, at
@@ -35,44 +52,17 @@
  * https://github.com/10up/grunt-wp-plugin
  */
 
-// Useful global constants
-define( '{%= prefix_caps %}_VERSION', '0.1.0' );
-define( '{%= prefix_caps %}_URL',     plugin_dir_url( __FILE__ ) );
-define( '{%= prefix_caps %}_PATH',    dirname( __FILE__ ) . '/' );
+// Load the plugin class
+require_once 'includes/plugin.class.php';
 
 /**
- * Default initialization for the plugin:
- * - Registers the default textdomain.
+ * Class {%= plugin_class %}
  */
-function {%= prefix %}_init() {
-	$locale = apply_filters( 'plugin_locale', get_locale(), '{%= prefix %}' );
-	load_textdomain( '{%= prefix %}', WP_LANG_DIR . '/{%= prefix %}/{%= prefix %}-' . $locale . '.mo' );
-	load_plugin_textdomain( '{%= prefix %}', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-}
+Class {%= plugin_class %} extends {%= plugin_class %}_Plugin {
 
-/**
- * Activate the plugin
- */
-function {%= prefix %}_activate() {
-	// First load the init scripts in case any rewrite functionality is being loaded
-	{%= prefix %}_init();
-
-	flush_rewrite_rules();
-}
-register_activation_hook( __FILE__, '{%= prefix %}_activate' );
-
-/**
- * Deactivate the plugin
- * Uninstall routines should be in uninstall.php
- */
-function {%= prefix %}_deactivate() {
+	public function __construct() {
+		$this->setup( '{%= prefix %}', 'plugin' );
+	}
 
 }
-register_deactivation_hook( __FILE__, '{%= prefix %}_deactivate' );
-
-// Wireup actions
-add_action( 'init', '{%= prefix %}_init' );
-
-// Wireup filters
-
-// Wireup shortcodes
+${%= plugin_class %} = new {%= plugin_class %}();
