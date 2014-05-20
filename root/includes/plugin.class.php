@@ -621,9 +621,6 @@ class RS2014_Plugin {
 		// Find any widget classes and load them up
 		if ( file_exists( $folder_base ) ) {
 
-			// We extend WP_Widget with some extras
-			load_template( $this->dir('includes') . 'widget-base.php' );
-
 			// Regex for finding the widget name
 			$preg = '/class[\s\n]+([a-zA-Z0-9_]+)[\s\na-zA-Z0-9_]+\{/';
 
