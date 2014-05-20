@@ -13,7 +13,7 @@
 // ======================================================================================
 // @author     Simon Wheatley (http://simonwheatley.co.uk)
 // @version    1.0
-// @copyright  Copyright &copy; {%= grunt.template.today('yyyy') %} Simon Wheatley, All Rights Reserved
+// @copyright  Copyright &copy; 2014 Simon Wheatley, All Rights Reserved
 // @copyright  Some parts Copyright &copy; 2007 John Godley, All Rights Reserved
 // ======================================================================================
 // 1.0     - Initial release
@@ -54,11 +54,11 @@
  * An additional benefit is that it leads to code re-use, especially with regards to Ajax (i.e.
  * your display code can be called from many locations)
  *
- * @package {%= title %}
+ * @package Rolling Stones 2014
  * @author Simon Wheatley
  * @copyright Copyright (C) Simon Wheatley (except where noted)
  **/
-class {%= plugin_class %}_Plugin {
+class RS2014_Plugin {
 
 	/**
 	 * The name of this plugin
@@ -116,7 +116,6 @@ class {%= plugin_class %}_Plugin {
 	 * @author Simon Wheatley
 	 **/
 	public function setup( $name = '', $file = __FILE__, $type = null ) {
-
 		if ( ! $name )
 			throw new exception( "Please pass the name parameter into the setup method." );
 		$this->name = $name;
@@ -138,6 +137,7 @@ class {%= plugin_class %}_Plugin {
 
 			// This is a plugin
 			$this->folder = trim( basename( dirname( $file ) ), '/' );
+			error_log(var_export($this->folder,true));
 			$this->type = 'plugin';
 			// Allow someone to override the assumptions we're making here about where
 			// the plugin is held. For example, if this plugin is included as part of
@@ -147,13 +147,16 @@ class {%= plugin_class %}_Plugin {
 			// N.B. Because this code is running when the file is required, other plugins
 			// may not be loaded and able to hook these filters!
 			$plugins_dir = apply_filters( 'sil_plugins_dir', $plugins_dir, $this->name );
+			error_log(var_export($plugins_dir,true));
 			$plugins_url = apply_filters( 'sil_plugins_url', plugins_url(), $this->name );
 			$this->dir = trailingslashit( $plugins_dir ) . $this->folder . '/';
 			$this->url = trailingslashit( $plugins_url ) . $this->folder . '/';
 
 		} else {
+
 			// WTF?
 			error_log( 'PLUGIN/THEME ERROR: Cannot find ' . $plugin_dir . ' or "themes" in ' . $file );
+
 		}
 
 		// Suffix for enqueuing
@@ -165,6 +168,9 @@ class {%= plugin_class %}_Plugin {
 		}
 
 		$this->add_action( 'init', 'load_locale' );
+
+		// Load widgets
+		$this->add_action('widgets_init');
 	}
 
 	/**
@@ -607,6 +613,41 @@ class {%= plugin_class %}_Plugin {
 		$excerpt = trim( join( ' ', $words ) );
 		$excerpt .= ($use_dotdotdot) ? '…' : '';
 		return $excerpt;
+	}
+
+	public function widgets_init() {
+
+		// Where are we to find our widgets?
+		$folder_base = $this->dir('includes/widgets');
+		error_log(var_export($folder_base,true));
+
+		// Find any widget classes and load them up
+		if ( file_exists( $folder_base ) ) {
+			error_log("Folder exists");
+
+			// Regex for finding the widget name
+			$preg = '/class[\s\n]+([a-zA-Z0-9_]+)[\s\na-zA-Z0-9_]+\{/';
+
+			// Load the widgets
+			foreach( glob( $folder_base . '/*.php' ) as $file )  {
+
+				$data = implode('', file($file));
+
+				// Find the name
+				if ( preg_match( $preg, $data, $name ) ) {
+					$name = _cleanup_header_comment($name[1]);
+				}
+
+				// Load it up and register our widget
+				if ( ! empty( $name ) ) {
+					load_template( $file );
+					register_widget( $name );
+				}
+
+			}
+
+		}
+
 	}
 
 
